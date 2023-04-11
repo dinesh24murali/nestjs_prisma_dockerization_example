@@ -1,0 +1,32 @@
+{
+  "name": "strive",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/frontend",
+      "packages/backend",
+      "packages/choices"
+    ],
+    "nohoist": [
+      "**/**"
+    ]
+  },
+  "scripts": {
+    "frontend": "yarn workspace @strive/frontend",
+    "backend": "yarn workspace @strive/backend",
+    "choice": "yarn workspace @strive/choices build",
+    "ci-test": "yarn workspace @strive/backend test",
+    "web-start": "yarn workspace @strive/frontend start",
+    "server": "yarn workspace @strive/backend start:dev",
+    "server:lint": "yarn workspace @strive/backend lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com-dinesh24murali:dinesh24murali/strive.git"
+  },
+  "author": "",
+  "license": "ISC"
+}

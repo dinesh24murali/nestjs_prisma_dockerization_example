@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator erd {
+  provider = "prisma-erd-generator"
+  output   = "../erd.svg"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserStatus {
+  Active
+  Inactive
+  Invited
+}
+
+enum SalesStatus {
+  Open
+  Fulfilled
+  Cancelled
+}
+
+model User {
+  id                String     @id @default(uuid())
+  email             String?    @unique @db.VarChar(80)
+  phone             String?    @db.VarChar(10)
+  name              String     @db.VarChar(155)
+  password          String     @db.VarChar(150)
+  status            UserStatus @default(Invited)
+  verificationToken String?    @db.VarChar(255)
+  sales             Sales[]
+  address           Address[]
+  createdAt         DateTime?  @default(now()) @db.Timestamptz(6)
+  updatedAt         DateTime   @updatedAt
+}
+
+model Sales {
+  id              String      @id @default(uuid())
+  customer        User        @relation(fields: [customer_id], references: [id])
+  customer_id     String
+  address         Address     @relation(fields: [address_id], references: [id])
+  address_id      String
+  product         Product     @relation(fields: [product_id], references: [id])
+  product_id      String
+  date            DateTime
+  discount_amount Int?
+  package_charges Int?
+  invoice_net_amt Int
+  tax             Int
+  createdAt       DateTime?   @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime    @updatedAt
+  status          SalesStatus
+}
+
+model Product {
+  id           String    @id @default(uuid())
+  name         String    @db.VarChar(255)
+  stock        Int       @default(0)
+  price        Int?
+  discount_per Int?
+  is_available Boolean   @default(true)
+  image_url    String?
+  sales        Sales[]
+  createdAt    DateTime? @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime  @updatedAt
+}
+
+model Address {
+  id          String  @id @default(uuid())
+  address1    String? @db.VarChar(255)
+  address2    String? @db.VarChar(255)
+  state       String? @db.VarChar(100)
+  city        String? @db.VarChar(100)
+  pincode     String? @db.VarChar(10)
+  phone       String? @db.VarChar(20)
+  sales       Sales[]
+  customer    User    @relation(fields: [customer_id], references: [id])
+  customer_id String
+}

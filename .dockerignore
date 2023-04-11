@@ -1,0 +1,10 @@
+
+
+node_modules
+nginx
+notes
+Dockerfile
+.dockerignore
+.git
+.gitignore
+docker-compose*
